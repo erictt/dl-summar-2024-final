@@ -1,74 +1,79 @@
-<!---
-Copyright 2020 The HuggingFace Team. All rights reserved.
+# Question answering with Adapters
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+> **Note:** We have not adapted the following scripts of Hugging Face Transformers:
 
-    http://www.apache.org/licenses/LICENSE-2.0
+This folder contains several scripts that showcase how to fine-tune a 🤗 Transformers model on a question answering dataset,
+like SQuAD.
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
--->
+## Trainer-based scripts
 
-## Language model training using Adapters
+The [`run_qa.py`](https://github.com/huggingface/transformers/blob/main/examples/pytorch/question-answering/run_qa.py),
+[`run_qa_beam_search.py`](https://github.com/huggingface/transformers/blob/main/examples/pytorch/question-answering/run_qa_beam_search.py) and [`run_seq2seq_qa.py`](https://github.com/huggingface/transformers/blob/main/examples/pytorch/question-answering/run_seq2seq_qa.py) leverage the 🤗 [Trainer](https://huggingface.co/transformers/main_classes/trainer.html) for fine-tuning.
 
->  **Note:** In the original Hugging Face Transformers examples, there are 5 scripts included. We have adapted `run_clm.py` and `run_mlm.py`. We have not adapted the scripts `run_clm_no_trainer.py`, `run_mlm_no_trainer.py` and `run_plm.py`.
+### Fine-tuning BERT on SQuAD1.0
 
-Fine-tuning (or training from scratch) the library models for language modeling on a text dataset for GPT, GPT-2,
-ALBERT, BERT, DistilBERT, RoBERTa, XLNet... GPT and GPT-2 are trained or fine-tuned using a causal language modeling
-(CLM) loss while ALBERT, BERT, DistilBERT and RoBERTa are trained or fine-tuned using a masked language modeling (MLM)
-loss. XLNet uses permutation language modeling (PLM), you can find more information about the differences between those
-objectives in our [model summary](https://huggingface.co/transformers/model_summary.html).
+The [`run_qa.py`](https://github.com/huggingface/transformers/blob/main/examples/pytorch/question-answering/run_qa.py) script
+allows to fine-tune any model from our [hub](https://huggingface.co/models) (as long as its architecture has a `ForQuestionAnswering` version in the library) on a question-answering dataset (such as SQuAD, or any other QA dataset available in the `datasets` library, or your own csv/jsonlines files) as long as they are structured the same way as SQuAD. You might need to tweak the data processing inside the script if your data is structured differently.
 
-**Note:** The old script `run_language_modeling.py` is still available [here](https://github.com/huggingface/transformers/blob/main/examples/legacy/run_language_modeling.py).
+**Note:** This script only works with models that have a fast tokenizer (backed by the 🤗 Tokenizers library) as it
+uses special features of those tokenizers. You can check if your favorite model has a fast tokenizer in
+[this table](https://huggingface.co/transformers/index.html#supported-frameworks), if it doesn't you can still use the old version of the script which can be found [here](https://github.com/huggingface/transformers/tree/main/examples/legacy/question-answering).
 
-The following examples, will run on datasets hosted on our [hub](https://huggingface.co/datasets) or with your own
-text files for training and validation. We give examples of both below.
+Note that if your dataset contains samples with no possible answers (like SQuAD version 2), you need to pass along the flag `--version_2_with_negative`.
 
-### GPT-2/GPT and causal language modeling
-
-The following example fine-tunes GPT-2 on WikiText-2. We're using the raw WikiText-2 (no tokens were replaced before
-the tokenization). The loss here is that of causal language modeling.
+This example code fine-tunes BERT on the SQuAD1.0 dataset. It runs in 24 min (with BERT-base) or 68 min (with BERT-large)
+on a single tesla V100 16GB.
 
 ```bash
-python run_clm.py \
-    --model_name_or_path gpt2 \
-    --dataset_name wikitext \
-    --dataset_config_name wikitext-2-raw-v1 \
-    --per_device_train_batch_size 8 \
-    --per_device_eval_batch_size 8 \
-    --do_train \
-    --do_eval \
-    --output_dir /tmp/test-clm \
-    --train_adapter \
-    --adapter_config seq_bn \
-    --overwrite_output_dir
+python run_qa.py \
+  --model_name_or_path bert-base-uncased \
+  --dataset_name squad \
+  --do_train \
+  --do_eval \
+  --per_device_train_batch_size 12 \
+  --learning_rate 3e-5 \
+  --num_train_epochs 2 \
+  --max_seq_length 384 \
+  --doc_stride 128 \
+  --output_dir /tmp/debug_squad/ \
+  --train_adapter \
+  --adapter_config seq_bn \
+  --overwrite_output_dir
 ```
 
-This takes about half an hour to train on a single K80 GPU and about one minute for the evaluation to run. It reaches
-a score of ~20 perplexity once fine-tuned on the dataset.
-
-To run on your own training and validation files, use the following command:
+Training with the previously defined hyper-parameters yields the following results:
 
 ```bash
-python run_clm.py \
-    --model_name_or_path gpt2 \
-    --train_file path_to_train_file \
-    --validation_file path_to_validation_file \
-    --per_device_train_batch_size 8 \
-    --per_device_eval_batch_size 8 \
-    --do_train \
-    --do_eval \
-    --output_dir /tmp/test-clm \
-    --train_adapter \
-    --adapter_config seq_bn \
-    --overwrite_output_dir
+f1 = 88.52
+exact_match = 81.22
 ```
 
+### Fine-tuning T5 on SQuAD2.0
+
+The [`run_seq2seq_qa.py`](https://github.com/huggingface/transformers/blob/main/examples/pytorch/question-answering/run_seq2seq_qa.py) script is meant for encoder-decoder (also called seq2seq) Transformer models, such as T5 or BART. These
+models are generative, rather than discriminative. This means that they learn to generate the correct answer, rather than predicting the start and end position of the tokens of the answer.
+
+This example code fine-tunes T5 on the SQuAD2.0 dataset.
+
+```bash
+python run_seq2seq_qa.py \
+  --model_name_or_path t5-small \
+  --dataset_name squad_v2 \
+  --context_column context \
+  --question_column question \
+  --answer_column answers \
+  --do_train \
+  --do_eval \
+  --per_device_train_batch_size 12 \
+  --learning_rate 3e-5 \
+  --num_train_epochs 2 \
+  --max_seq_length 384 \
+  --doc_stride 128 \
+  --output_dir /tmp/debug_seq2seq_squad/ \
+  --train_adapter \
+  --adapter_config seq_bn \
+  --overwrite_output_dir
+```
 
 ### RoBERTa/BERT/DistilBERT and masked language modeling
 
@@ -128,7 +133,6 @@ We have not adapted the permutation language modeling training scripts to use Ad
 ## Creating a model on the fly
 
 When training a model from scratch, configuration values may be overridden with the help of `--config_overrides`:
-
 
 ```bash
 python run_clm.py --model_type gpt2 --tokenizer_name gpt2 \ --config_overrides="n_embd=1024,n_head=16,n_layer=48,n_positions=102" \ --train_adapter \
