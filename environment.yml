@@ -1,0 +1,10 @@
+name: cs7643-final
+channels:
+  - defaults
+dependencies:
+  - python==3.10.10
+  - jupyter
+  - pip
+  - pip:
+      - torch
+      - notebook
