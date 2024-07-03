@@ -5,7 +5,7 @@ Training script:
 ```
 python3 run_qa.py \
   --model_name_or_path roberta-base  \
-  --dataset_name rajpurkar/squad_v2 \
+  --dataset_name squad_v2 \
   --do_train \
   --do_eval \
   --per_device_train_batch_size 12 \
