@@ -730,7 +730,9 @@ def main():
         return metric.compute(predictions=p.predictions, references=p.label_ids)
 
     # Setup adapters
-    setup_adapter_training(model, adapter_args, data_args.dataset_name or "squad")
+    setup_adapter_training(
+        model, adapter_args, data_args.dataset_name.replace("/", "___") or "squad"
+    )
     # Initialize our Trainer
     trainer_class = (
         QuestionAnsweringAdapterTrainer
