@@ -3,3 +3,4 @@ adapters
 datasets >= 1.8.0
 evaluate
 transformers ~= 4.40.2
+scipy
