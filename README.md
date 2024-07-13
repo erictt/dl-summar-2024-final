@@ -6,6 +6,8 @@
 
 2. Train adapter
 
+`cd train/`
+
 e.g.
 
 ```
@@ -21,6 +23,6 @@ python3 run_qa.py \
   --doc_stride 128 \
   --output_dir ./seq_bn/ \
   --train_adapter \
-  --adapter_config seq_bn \
+  --adapter_config ./configs/adapter_config_seq_bn_default.json \
   --overwrite_output_dir
 ```
