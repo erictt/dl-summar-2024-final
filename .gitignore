@@ -162,4 +162,4 @@ cython_debug/
 
 *.bak
 
-./train/output/
+train/output/*
