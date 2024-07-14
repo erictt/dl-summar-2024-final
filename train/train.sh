@@ -10,7 +10,7 @@ python3 run_qa.py \
 	--num_train_epochs 3 \
 	--max_seq_length 384 \
 	--doc_stride 128 \
-	--output_dir ./seq_bn/ \
+	--output_dir ./output/seq_bn_default/ \
 	--train_adapter \
 	--adapter_config ./configs/adapter_config_seq_bn_default.json \
 	--version_2_with_negative \
@@ -26,7 +26,7 @@ python3 run_qa.py \
 	--num_train_epochs 3 \
 	--max_seq_length 384 \
 	--doc_stride 128 \
-	--output_dir ./pf/ \
+	--output_dir ./output/pf_default/ \
 	--train_adapter \
 	--adapter_config ./configs/adapter_config_pf_default.json \
 	--version_2_with_negative \
