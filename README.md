@@ -6,23 +6,5 @@
 
 2. Train adapter
 
-`cd train/`
-
-e.g.
-
-```
-python3 run_qa.py \
-  --model_name_or_path roberta-base  \
-  --dataset_name rajpurkar/squad_v2 \
-  --do_train \
-  --do_eval \
-  --per_device_train_batch_size 12 \
-  --learning_rate 3e-5 \
-  --num_train_epochs 2 \
-  --max_seq_length 384 \
-  --doc_stride 128 \
-  --output_dir ./seq_bn/ \
-  --train_adapter \
-  --adapter_config ./configs/adapter_config_seq_bn_default.json \
-  --overwrite_output_dir
-```
+`$ cd train/`
+`$ ./train.sh`
