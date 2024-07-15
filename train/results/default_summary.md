@@ -47,6 +47,31 @@ double seq_bn default
 
 ```
 
+
+```
+seq_bn_inv default
+***** eval metrics *****
+  epoch                   =        3.0
+  eval_HasAns_exact       =    76.1471
+  eval_HasAns_f1          =    82.6326
+  eval_HasAns_total       =       5928
+  eval_NoAns_exact        =    78.1497
+  eval_NoAns_f1           =    78.1497
+  eval_NoAns_total        =       5945
+  eval_best_exact         =    77.1498
+  eval_best_exact_thresh  =        0.0
+  eval_best_f1            =    80.3879
+  eval_best_f1_thresh     =        0.0
+  eval_exact              =    77.1498
+  eval_f1                 =    80.3879
+  eval_runtime            = 0:01:14.93
+  eval_samples            =      12165
+  eval_samples_per_second =     162.35
+  eval_steps_per_second   =     20.299
+  eval_total              =      11873
+```
+
+
 ```
 prefix tunning default
 ***** eval metrics *****
@@ -93,27 +118,4 @@ lora default
   eval_steps_per_second   =     20.457
   eval_total              =      11873
 
-```
-
-```
-
-***** eval metrics *****
-  epoch                   =        3.0
-  eval_HasAns_exact       =    76.1471
-  eval_HasAns_f1          =    82.6326
-  eval_HasAns_total       =       5928
-  eval_NoAns_exact        =    78.1497
-  eval_NoAns_f1           =    78.1497
-  eval_NoAns_total        =       5945
-  eval_best_exact         =    77.1498
-  eval_best_exact_thresh  =        0.0
-  eval_best_f1            =    80.3879
-  eval_best_f1_thresh     =        0.0
-  eval_exact              =    77.1498
-  eval_f1                 =    80.3879
-  eval_runtime            = 0:01:14.93
-  eval_samples            =      12165
-  eval_samples_per_second =     162.35
-  eval_steps_per_second   =     20.299
-  eval_total              =      11873
 ```
