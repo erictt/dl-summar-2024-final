@@ -31,5 +31,12 @@
     "shared_W_phm": false,
     "shared_phm_rule": true,
     "use_gating": false
-  }
+  },
+  "config_id": "9ed5b5a29de19b71",
+  "hidden_size": 768,
+  "model_class": "RobertaForQuestionAnswering",
+  "model_name": "roberta-base",
+  "model_type": "roberta",
+  "name": "squad_v2",
+  "version": "0.2.2"
 }
