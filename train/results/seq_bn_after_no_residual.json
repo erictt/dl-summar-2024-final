@@ -1,0 +1,20 @@
+{
+    "epoch": 3.0,
+    "eval_HasAns_exact": 52.530364372469634,
+    "eval_HasAns_f1": 59.55730068863191,
+    "eval_HasAns_total": 5928,
+    "eval_NoAns_exact": 54.44911690496215,
+    "eval_NoAns_f1": 54.44911690496215,
+    "eval_NoAns_total": 5945,
+    "eval_best_exact": 53.88697043712625,
+    "eval_best_exact_thresh": 0.0,
+    "eval_best_f1": 57.164276223194506,
+    "eval_best_f1_thresh": 0.0,
+    "eval_exact": 53.491114292933545,
+    "eval_f1": 56.999551796699414,
+    "eval_runtime": 82.6509,
+    "eval_samples": 12165,
+    "eval_samples_per_second": 147.185,
+    "eval_steps_per_second": 18.403,
+    "eval_total": 11873
+}
