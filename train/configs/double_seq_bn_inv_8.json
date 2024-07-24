@@ -18,7 +18,7 @@
     "non_linearity": "relu",
     "original_ln_after": true,
     "original_ln_before": true,
-    "output_adapter": false,
+    "output_adapter": true,
     "phm_bias": true,
     "phm_c_init": "normal",
     "phm_dim": 4,
