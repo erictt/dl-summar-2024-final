@@ -1,6 +1,6 @@
 #!/bin/bash
 
-configs=("seq_bn_default" "double_seq_bn_default" "prefix_tuning_default" "lora_default" "seq_bn_inv_default")
+configs=("double_seq_bn_inv_default" "double_seq_bn_inv_8" "double_seq_bn_inv_32")
 
 for config in "${configs[@]}"; do
 	python3 run_qa.py \
