@@ -1,9 +1,8 @@
 # Fine-tuning RoBERT on SQuAD2.0
 
-The [`run_qa.py`](https://github.com/huggingface/transformers/blob/main/examples/pytorch/question-answering/run_qa.py) script is refactored to
-allows to train adapters with RoBERT model .
+The `run_qa.py` script is a modified version of [huggingface's run_qa script](https://github.com/huggingface/transformers/blob/main/examples/pytorch/question-answering/run_qa.py) to allows training adapters with RoBERT model .
 
-Below is the example for training roberta-base with seq_bn adapter:
+Below is an example for training roberta-base with seq_bn adapter:
 
 ```bash
 python3 run_qa.py \
