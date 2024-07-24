@@ -16,29 +16,13 @@ bar_width = 0.2
 adapters = df_grouped["Adapter"]
 indices = range(len(adapters))
 
-ax.bar(
-    [i - 1.5 * bar_width for i in indices],
-    df_grouped["32"],
-    width=bar_width,
-    label="32",
-)
-ax.bar(
-    [i - 0.5 * bar_width for i in indices],
-    df_grouped["16"],
-    width=bar_width,
-    label="16",
-)
-ax.bar(
-    [i + 0.5 * bar_width for i in indices], df_grouped["8"], width=bar_width, label="8"
-)
-ax.bar(
-    [i + 1.5 * bar_width for i in indices], df_grouped["4"], width=bar_width, label="4"
-)
+ax.bar([i - 1.5 * bar_width for i in indices], df_grouped["32"], width=bar_width, label="RF: 32")
+ax.bar([i - 0.5 * bar_width for i in indices], df_grouped["16"], width=bar_width, label="RF: 16")
+ax.bar([i + 0.5 * bar_width for i in indices], df_grouped["8"], width=bar_width, label="RF: 8")
+ax.bar([i + 1.5 * bar_width for i in indices], df_grouped["4"], width=bar_width, label="RF: 4")
 
 # baseline
-ax.axhline(
-    y=82.91251169582613, color="r", linestyle="--", label="deepset/roberta-base-squad2"
-)
+ax.axhline(y=82.91251169582613, color="r", linestyle="--", label="deepset/roberta-base-squad2")
 
 ax.set_xlabel("Adapter Method")
 ax.set_ylabel("F1 Score")
