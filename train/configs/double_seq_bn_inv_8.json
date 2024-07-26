@@ -25,7 +25,7 @@
     "phm_init_range": 0.0001,
     "phm_layer": false,
     "phm_rank": 1,
-    "reduction_factor": 4,
+    "reduction_factor": 8,
     "residual_before_ln": true,
     "scaling": 1.0,
     "shared_W_phm": false,

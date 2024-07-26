@@ -2,7 +2,7 @@
 
 The `run_qa.py` script is a modified version of [huggingface's run_qa script](https://github.com/huggingface/transformers/blob/main/examples/pytorch/question-answering/run_qa.py) to allows training adapters with RoBERT model .
 
-Below is an example for training roberta-base with seq_bn adapter:
+Below is the example for training roberta-base with seq_bn adapter:
 
 ```bash
 python3 run_qa.py \

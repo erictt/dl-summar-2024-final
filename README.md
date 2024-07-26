@@ -1,25 +1,46 @@
 # Deep Learning - Final Project
 
-Adaptive Layers for Efficient Learning: Scaling Architecture in RoBERTa for Optimized Performance on SQuAD 2.0
+## Adaptive Layers for Efficient Learning: Scaling Architecture in RoBERTa for Optimized Performance on SQuAD 2.0
 
-## Prepare Env
+### Prepare Environment
 
-1. Create conda environment
+1. **Create Conda Environment**
 
-`conda env create --file environment.yml`
+   ```bash
+   conda env create --file environment.yml
+   ```
 
-2. Activate conda environment
+2. **Activate Conda Environment**
 
-`conda activate cs7643-final`
+   ```bash
+   conda activate cs7643-final
+   ```
 
-## Train adapters
+### Train Adapters
 
-To train the adapters, you first need to add configurations under `./train/configs/`, then change the list in the train script.
+To train the adapters, follow these steps:
 
-Once the training is done, the adapters and the evaluation results will be stored in folder `./train/adapters` and `./train/results/` respectively.
+1. Add configurations under the `./train/configs/` directory.
+2. Update the list in the train script accordingly.
 
-These are the script used for training in different platform/OS:
+Upon completion, the adapters and evaluation results will be stored in `./train/adapters` and `./train/results/` directories, respectively.
 
-- `./train.sh` // Linux/macOS
-- `./train_colab.sh` // will save the output to your google drive.(you may need add apapter/outs folder in your google drive)
-- `train.bat` // Windows
+**Training Scripts:**
+
+- For Linux/macOS:
+  
+  ```bash
+  ./train.sh
+  ```
+
+- For Google Colab (outputs will be saved to your Google Drive; ensure you have `adapter/outs` folders in your Drive):
+  
+  ```bash
+  ./train_colab.sh
+  ```
+
+- For Windows:
+
+  ```bash
+  train.bat
+  ```
