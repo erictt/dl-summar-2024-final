@@ -34,10 +34,9 @@
 
 \begin{abstract}
 
-Efficient adaptation\cite{b3} of large language models is crucial for various applications in natural language processing, including question answering and information retrieval. Typically, this is approached through full fine-tuning, where all model parameters are updated for a specific task. While effective for short-term adaptations, this method becomes computationally expensive and impractical for multiple tasks or resource-constrained environments. This project aims to explore recent approaches that can achieve comparable performance with significantly fewer trainable parameters\cite{b6,b7}. To this end, we implemented and extended various adapter architectures for the RoBERTa model, focusing on the SQuAD 2.0 dataset. In this study, we document our experimental setup, report our results on different adapter configurations including multi-head, output, and invertible adapters across various reduction factors, and compare them to the fully fine-tuned baseline. We analyze the performance and training dynamics of these configurations, interpret our findings, and discuss the implications for efficient model adaptation in NLP tasks.
+Traditionally, large language models are adapted for specific tasks through full fine-tuning, which updates all model parameters. While effective, this approach is computationally expensive and impractical for multiple tasks or resource-constrained environments. To address these limitations, recent methods have introduced adapter architectures, which achieve comparable performance with significantly fewer trainable parameters. In this study, we implemented and extended various adapter architectures\cite{b3,b7} for the RoBERTa model, focusing on the SQuAD 2.0 dataset. Our experiments evaluated different adapter configurations, including multi-head, output, and invertible adapters across various reduction factors, and compared them to a fully fine-tuned baseline. Our results show that the Double + Inv adapter configuration with a reduction factor of 4 achieved an F1 score of 82.86, which is very close to the baseline score of 82.91, while reducing the number of trainable parameters by 97\%. This demonstrates that adapter-based fine-tuning can maintain high performance with significantly lower computational costs.
 
 \end{abstract}
-
 
 \section{Introduction}
 
@@ -83,9 +82,16 @@ To address this issue, researchers have developed adapters, a lightweight fine-t
 
 Adapter-based tuning offers several advantages over traditional fine-tuning methods. Firstly, it requires training far fewer parameters, significantly reducing computational costs and memory requirements\cite{b3,b8}. This efficiency allows for sequential training on multiple tasks without the risk of catastrophic forgetting \cite{b8}. Secondly, adapters are modular and composable, enabling the easy combination of task-specific adaptations \cite{b7,b8}. Lastly, trained adapters are easily shareable, promoting collaborative research and reducing the need for repeated training on common tasks \cite{b7}.
 
-Adapter architectures are defined by a set of hyperparameters that control their structure and behavior within the larger language model\cite{b9,b10} . These hyperparameters govern aspects such as the adapter's size, position within the network, and how it interacts with the original model architecture. They collectively determine the balance between the adapter's capacity to learn task-specific information and its computational efficiency. Among these, several key hyperparameters have emerged as particularly influential in adapter performance.
+Adapter architectures are defined by a set of hyperparameters that control their structure and behavior within the larger language model\cite{b9,b10}. These hyperparameters govern aspects such as the adapter's size, position within the network, and how it interacts with the original model architecture. They collectively determine the balance between the adapter's capacity to learn task-specific information and its computational efficiency. Among these, several key hyperparameters have emerged as particularly influential in adapter performance.
 
-The reduction factor is a critical hyperparameter that determines how much the adapter layers reduce the dimensionality of the input. This factor directly impacts both the efficiency of the adapter and its capacity to capture task-specific features. A higher reduction factor results in a smaller adapter, promoting efficiency, while a lower factor allows for more expressive power at the cost of increased parameters \cite{b11}. The multi-head adapter (mh\_adapter) is another important parameter that, when enabled, applies adaptation to each attention head separately. This approach potentially allows the adapter to capture more nuanced, head-specific information \cite{b12}. Lastly, the output adapter, controlled by the output\_adapter parameter, processes the outputs of the main layers, refining the model's predictions before they are passed to the next layer or used for the final output. This can be particularly useful for fine-tuning the model's behavior for specific tasks \cite{b12}. Together, these hyperparameters play crucial roles in striking the optimal balance between model capacity and computational efficiency \cite{b8,b11}. 
+The reduction factor is a key hyperparameter in adapter architectures that determines the degree of dimensionality reduction within the adapter layers. As defined by the equation:
+
+\begin{equation}
+    \text{reduction\_factor} = \frac{d_{\text{hidden}}}{d_{\text{bottleneck}}}
+    \label{eq:placeholder}
+\end{equation}
+
+Where $d_{\text{hidden}}$ is the dimension of the hidden layers in the main model, $d_{\text{bottleneck}}$ is the reduced dimension within the adapter. A higher reduction factor results in a smaller adapter, promoting efficiency, while a lower factor allows for more expressive power at the cost of increased parameters \cite{b11}. The multi-head adapter (mh\_adapter) is another important parameter that, when enabled, applies adaptation to each attention head separately. This approach potentially allows the adapter to capture more nuanced, head-specific information \cite{b12}. Lastly, the output adapter, controlled by the output\_adapter parameter, processes the outputs of the main layers, refining the model's predictions before they are passed to the next layer or used for the final output. This can be particularly useful for fine-tuning the model's behavior for specific tasks \cite{b12}. Together, these hyperparameters play crucial roles in striking the optimal balance between model capacity and computational efficiency \cite{b8,b11}. 
 
 In addition to these standard adapters, we also explore the use of invertible adapters. Invertible adapters utilize architectures like NICE (Non-linear Independent Components Estimation), allowing for reversible transformations \cite{b13}. This reversibility can be particularly useful for tasks requiring reversible data transformations, such as data compression or certain generative modeling applications. Invertible adapters offer a unique approach to adaptation, fitting seamlessly into the current landscape of efficient NLP model tuning by providing additional flexibility and efficiency \cite{b14}. They align well with our goal of maintaining model performance while minimizing the number of additional parameters, potentially offering a more efficient solution for adapting large language models to specific tasks.
 
@@ -93,17 +99,7 @@ In this study, we utilize the RoBERTa-base model, a robustly optimized variant o
 
 Our study seeks to optimize the RoBERTa-base model for the SQuAD 2.0 dataset using experimental adapter architectures. By striking a balance between efficiency and performance, we aim to demonstrate that resource-efficient adapters can maintain or even surpass the performance of fine-tuned models in challenging question-answering tasks. Our findings could have significant implications for deploying these models in resource-constrained environments and for enabling rapid adaptation to new tasks or domains without the need for extensive retraining.
 
-%\subsection{Related Work}
-
-%\begin{enumerate}
-%Parameter-efficient transfer learning in NLP
-%Adapter architectures and their applications
-%Adaptive attention span in transformers
-%Low-rank adaptation (LoRA) techniques
-%\end{enumerate}
-
 \section{Methodology}
-
 
 \subsection{Baseline Model}
 
@@ -120,7 +116,7 @@ The fine-tuned RoBERTa-base was trained with mixed precision floating point arit
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=1\linewidth]{images/adapter_strcuture.png}
+    \includegraphics[width=1\linewidth]{images/dl11.png}
     \caption{Adapter Architecture Variants: (a) Standard adapter architecture where the adapter is inserted after the feed-forward layer, (b) Adapter inserted after the multi-head attention layer,(c) Double adapter architecture where adapters are inserted after both the feed-forward and multi-head attention layers, (d) Double adapter architecture with an additional invertible adapter applied to the embeddings.adapted from \cite{b7}}
 \end{figure}
 
@@ -138,15 +134,10 @@ In the adapter Design, we adopt a variety of adapter architectures along with th
 
 % (10 points) What did you do exactly? How did you solve the problem? Why did you think it would be successful? Is anything new in your approach?
 
-We evaluated and trained four distinct adapter configurations with SQuAD 2.0 dataset (see Table \ref{tab:t3}, Table \ref{tab:t4} ): MH, Output, Double, and Double + Inv. Each configuration aimed to enhance the RoBERTa model's performance on the SQuAD 2.0 dataset by integrating different adapter placements within the transformer layers. We tested these configurations with reduction factors \cite{b13} of 32, 16, 8, and 4, where lower factors indicated larger adapter sizes. All the training were use 1 X Nvidia V100 GPU (the baseline used 4 GPUs) with 3,552,002 trainable parameters. 
-We established per device train batch size to 16 and learning rate to be 1e-4 in our experimental setup. In our setup, we run training on three epochs as it had shown optimal training without overfitting. We set the maximum sequence length to 384 for the effective management of long contexts and the document stride to 128 for proper management of overlapping segments, which is crucial for the question-answering task within the SQuAD 2.0 dataset. These settings were chosen in order to balance computational efficiency and model performance, allowing thorough training within a single GPU limit, while making the dataset work effectively. The learning rate of 1e-4 is selected based on preliminary experiments that suggested it may offer a nice balance between convergence speed and stability. The size of the batch, which is 16 in number, is optimized and balanced by GPU memory use and training time to ensure that the model can see a sufficient amount of data at every iteration. By training for three epochs, the model was able to learn well from the data without any signs of overfitting.
-\begin{equation}
-    \text{reduction\_factor} = \frac{d_{\text{hidden}}}{d_{\text{bottleneck}}}
-    \label{eq:placeholder}
-\end{equation}
+We evaluated and trained four distinct adapter configurations with SQuAD 2.0 dataset (see Table \ref{tab:t3}, Table \ref{tab:t4} ): MH, Output, Double, and Double + Inv. Each configuration aimed to enhance the RoBERTa model's performance on the SQuAD 2.0 dataset by integrating different adapter placements within the transformer layers. We tested these configurations with reduction factors of 32, 16, 8, and 4, where lower factors indicated larger adapter sizes. All the training were use 1X NVIDIA V100 GPU (the baseline used 4X V100 GPUs) with 131,823 examples, 3 epochs, and 24,717 optimization steps. 
+We established per device train batch size to 16 and learning rate to be 1e-4 in our experimental setup. In our setup, we run training on three epochs as it had shown optimal training without overfitting. We set the maximum sequence length to 384 for the effective management of long contexts and the document stride to 128 for proper management of overlapping segments, which is crucial for the question-answering task within the SQuAD 2.0 dataset. These settings were chosen in order to balance computational efficiency and model performance, allowing thorough training within a single GPU limit, while making the dataset work effectively. The learning rate of 1e-4 is selected based on preliminary experiments that suggested it offers a nice balance between convergence speed and stability. The size of the batch, which is 16 in number, is optimized and balanced by GPU memory use and training time to ensure that the model can see a sufficient amount of data at every iteration. By training for three epochs, the model was able to learn well from the data without any signs of overfitting.
 
 The construction of the AdapterHub frame (\url{https://github.com/adapter-hub/adapters}) is highly flexible and modular: we can integrate very efficiently, without excessive expense. Of course, we'd like to be able to determine the best configuration that strikes a good balance between performance improvements and computing efficiency, given various constraints in adapting the position and size of the adapters. We believe such configurations will be successful. Our approach is novel in that it introduces a systematic evaluation of various adapter configurations within a unified framework. Although adapters have been the subject of prior research, our systematic comparison of the location and size of adapters coupled with AdapterHub framework usage sheds new light on the impact of adapter integration on model performance. 
-
 
 
 % (5 points) What problems did you anticipate? What problems did you encounter? Did the very first thing you tried work?
@@ -244,13 +235,16 @@ Notably, the Double + Inv configuration (Figure 5) achieves a slightly lower fin
 The experimental results demonstrate that our adaptive layer approach can achieve performance close to the fine-tuned RoBERTa model while utilizing fewer parameters. The Double and Double Inv configurations consistently outperformed the MH and Output configurations, indicating that combining multiple adapter types can enhance model performance.
 
 The consistent improvement observed with more complex adapter architectures and larger adapter sizes (lower reduction factors) suggests that there may be room for further performance gains through more sophisticated adapter designs or hybrid approaches.
-% \cite{b2}
+
+Furthermore, empirical evidence points to the enormous remaining potential of more sophisticated adapter mechanisms that manage to bridge performance differences between lightweight models and fully fine-tuned counterparts. Our results, in fact, show that it is the Double and Double Inv configurations that manage to combine multiple types of adapters in a way that allows leveraging the strong points of each component for maximal performance gain. This seems to identify strategic combinations and hybrid models as a promising direction for future research. Furthermore, the improvements with larger adapter sizes—corresponding to lower reduction factors—highlight the importance of fine-tuning this balance between parameter efficiency and model capacity. The reason for this theoretically is in the increased forced efficiency and regularization from smaller Reduction Factors. A smaller Reduction Factor indicates a smaller number of parameters, forcing the model to learn more efficient representations in the limited parameter space, improving generalization ability and preventing overfitting. This gives it a flavor of some kind of regularization mechanism, as smaller numbers of parameters within the model will act to constrain it toward more robust and generalized features. Furthermore, this allows more efficient use of parameters with a larger extraction of more meaningful features and contributes to training stability by mitigating numerical instability. Such a balance is important since, on the one hand, it has to be done to keep the model size small enough so that it can be practical, while on the other hand, this needs to be maximized for its performance. Additional research on adaptive mechanisms for the reduction factor over the complexity of the input may further optimize this trade-off. Future work could also be focused on the examination of domain-specific adapters, possibly offering tailored transformations for different data types or task types. Even more interestingly, the approach described above can be extended by adapting meta-learning techniques to let the model automatically search for the best adapter configurations during training. We will follow the development of these models further by improving such adaptive layer approaches so that the resulting models are on a par with performance in fully fine-tuned systems and at the same time offer more flexibility and efficiency, suitable for practical applications.
+
+
 
 \section{Conclusion}
 
 Our study demonstrates the potential of adapter-based fine-tuning as an efficient alternative to full fine-tuning for large language models. Key achievements include approaching the performance of full fine-tuning while reducing trainable parameters by 97-99\%, achieving competitive performance even with very small adapters, and demonstrating no statistically significant difference in performance between our best adapter configuration and the fully fine-tuned baseline. These results highlight the promise of adapter-based approaches in balancing performance and resource efficiency for NLP tasks.
 
-While our findings are encouraging, limitations and areas for future work remain. Further investigation is needed to optimize the trade-off between adapter size and performance across different scenarios, and to explore the generalizability of these findings to other tasks and domains beyond SQuAD 2.0. Future research could focus on more sophisticated adapter architectures and hybrid approaches combining adapters with other efficient fine-tuning techniques. Despite these open questions, our work paves the way for more accessible and adaptable NLP models, particularly in resource-constrained environments.
+While our findings are encouraging, limitations and areas for future work remain. Further investigation is needed to optimize the trade-off between adapter size and performance across different scenarios, and to explore the generalizability of these findings to other tasks and domains beyond SQuAD 2.0. Future research could focus on more sophisticated adapter architectures and hybrid approaches combining adapters with other efficient fine-tuning techniques.
 
 \section{Work Division}
 
